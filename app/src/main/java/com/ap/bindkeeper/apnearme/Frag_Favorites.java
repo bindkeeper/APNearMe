@@ -21,9 +21,6 @@ import java.util.ArrayList;
  */
 public class Frag_Favorites extends Fragment{
 
-
-
-
     public Frag_Favorites() {
     }
 
@@ -31,12 +28,9 @@ public class Frag_Favorites extends Fragment{
     public View onCreateView(LayoutInflater inflater,  ViewGroup container,  Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_favorites, container, false);
 
-        ArrayList<Place> list = new ArrayList<>();
-        list.add(new Place("MCdonalds", "Tel Aviv"));
-        list.add(new Place("Deda", "Givataim"));
-        list.add(new Place("Arugula", "Ramat Gan"));
+        DBHelper helper = new DBHelper(this.getContext());
 
-        MyAdapter recyclerAdapter = new MyAdapter(list);
+        MyAdapter recyclerAdapter = new MyAdapter(helper.getAllFavorites());
         RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.recyclerList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         recyclerView.setAdapter(recyclerAdapter);
@@ -84,7 +78,4 @@ public class Frag_Favorites extends Fragment{
             }
         }
     }
-
-
-
 }

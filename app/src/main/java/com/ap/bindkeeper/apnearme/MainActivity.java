@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setCurrentItem(1);
 
-
+        runOnce();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -64,6 +64,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    private void runOnce () {
+        DBHelper helper = new DBHelper(this);
+        helper.addPlace(new Place("McDonalds", "Tel Aviv"));
+        helper.addPlace(new Place("Deda", "Givataim"));
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -162,4 +168,7 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
+
+
+
 }
