@@ -69,7 +69,6 @@ public class Frag_Favorites extends Fragment{
                 super(itemView);
                 name = (TextView) itemView.findViewById(R.id.item_Name);
                 address = (TextView) itemView.findViewById(R.id.item_Address);
-
             }
 
             public void bindText(Place place) {
