@@ -1,9 +1,11 @@
 package com.ap.bindkeeper.apnearme;
 
+import java.io.Serializable;
+
 /**
  * Created by User on 08/06/2016.
  */
-public class Place {
+public class Place implements Serializable{
     String name, address;
 
     public Place(String name, String address) {
