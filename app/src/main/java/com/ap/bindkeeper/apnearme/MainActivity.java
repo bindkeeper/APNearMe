@@ -144,6 +144,8 @@ public class MainActivity extends AppCompatActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
             if (position == 0) {
                 return new Frag_Favorites();
+            } else if (position == 1) {
+                return new Fragment_Search();
             } else {
                 return PlaceholderFragment.newInstance(position + 1);
             }
