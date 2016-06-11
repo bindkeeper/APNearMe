@@ -39,8 +39,10 @@ public class SearchIntentService extends IntentService {
         // do some long background work
         ArrayList<Place> places = new ArrayList<>();
         String searchCriteria = intent.getStringExtra("search");
+        double lat = intent.getDoubleExtra("lat", -1);
+        double lon = intent.getDoubleExtra("lon", -1);
         String strUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
-                "32.0729435,34.7624418&radius=500&keyword=" +
+                lat+","+lon+"&radius="+500+"&keyword=" +
                 searchCriteria +
                 "&key="+ getResources().getString(R.string.google_places_key);
 

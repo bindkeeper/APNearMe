@@ -4,6 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,12 +26,16 @@ import java.util.ArrayList;
 /**
  * Created by User on 09/06/2016.
  */
-public class Fragment_Search extends Fragment implements  SearchView.OnQueryTextListener {
+public class Fragment_Search extends Fragment implements  SearchView.OnQueryTextListener, LocationListener {
 
     SearchAdapter recyclerAdapter;
     RecyclerView recyclerView;
     SearchView mSearchView;
     DBHelper helper;
+
+    String searchCriteria;
+
+    private LocationManager locationManager;
 
     public Fragment_Search() {
     }
@@ -43,7 +51,7 @@ public class Fragment_Search extends Fragment implements  SearchView.OnQueryText
         mSearchView = (SearchView) v.findViewById(R.id.searchView1);
         mSearchView.setOnQueryTextListener(this);
 
-
+        locationManager = (LocationManager) this.getContext().getSystemService(getContext().LOCATION_SERVICE);
 
         // create the receiver object to read the broadcast
         PlacesReceiver receiver = new PlacesReceiver();
@@ -71,10 +79,16 @@ public class Fragment_Search extends Fragment implements  SearchView.OnQueryText
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        Intent in=new Intent(this.getContext(),SearchIntentService.class);
-        in.putExtra("search",query);
-        this.getContext().startService(in);
 
+        try{
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
+          //  locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, this, Looper.getMainLooper());
+        }
+        catch (SecurityException ex){
+            Toast.makeText(this.getContext(), "Error - no permission", Toast.LENGTH_SHORT).show();
+        }
+
+        searchCriteria = query;
         return false;
     }
 
@@ -82,6 +96,44 @@ public class Fragment_Search extends Fragment implements  SearchView.OnQueryText
     public boolean onQueryTextChange(String newText) {
         return false;
     }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+        Toast.makeText(getContext(), "GPS Changed", Toast.LENGTH_SHORT).show();
+
+        double lat = location.getLatitude();
+        double lon = location.getLongitude();
+
+        // 7> don't listen to any more updates!
+        try{
+            locationManager.removeUpdates(this);
+        }
+        catch (SecurityException e){}
+
+        Intent in=new Intent(this.getContext(),SearchIntentService.class);
+        in.putExtra("search",searchCriteria);
+        in.putExtra("lat", lat);
+        in.putExtra("lon", lon);
+        this.getContext().startService(in);
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
 
     private class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHolder>{
 
