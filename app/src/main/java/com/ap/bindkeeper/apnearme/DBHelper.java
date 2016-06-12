@@ -59,6 +59,29 @@ public class DBHelper extends SQLiteOpenHelper {
         return favorites;
     }
 
+    public boolean setSearch (ArrayList<Place> places) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        db.delete(tableSearch, null, null);
+
+        db.beginTransaction();
+
+        for (Place place: places ) {
+
+            ContentValues values = new ContentValues();
+
+            values.put(nameRow, place.getName());
+            values.put(addressRow, place.getAddress());
+            db.insert(tableSearch, null, values);
+
+        }
+
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        return true;
+    }
+
     public ArrayList<Place> getSearch () {
         ArrayList<Place> favorites = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
