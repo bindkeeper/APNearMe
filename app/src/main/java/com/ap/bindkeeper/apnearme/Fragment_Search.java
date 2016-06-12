@@ -100,23 +100,24 @@ public class Fragment_Search extends Fragment implements  SearchView.OnQueryText
     @Override
     public void onLocationChanged(Location location) {
 
+        try{
+            locationManager.removeUpdates(this);
+        }
+        catch (SecurityException e){}
+
         Toast.makeText(getContext(), "GPS Changed", Toast.LENGTH_SHORT).show();
 
         double lat = location.getLatitude();
         double lon = location.getLongitude();
 
         // 7> don't listen to any more updates!
-        try{
-            locationManager.removeUpdates(this);
-        }
-        catch (SecurityException e){}
+
 
         Intent in=new Intent(this.getContext(),SearchIntentService.class);
         in.putExtra("search",searchCriteria);
         in.putExtra("lat", lat);
         in.putExtra("lon", lon);
         this.getContext().startService(in);
-
     }
 
     @Override
@@ -185,10 +186,11 @@ public class Fragment_Search extends Fragment implements  SearchView.OnQueryText
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Toast.makeText(Fragment_Search.this.getContext(), "Places Received", Toast.LENGTH_SHORT).show();
 
             ArrayList<Place> places = (ArrayList<Place>) intent.getSerializableExtra("places");
-            setAdapter(places);
+            Toast.makeText(Fragment_Search.this.getContext(),  places.size() +"Places Received", Toast.LENGTH_SHORT).show();
+            helper.setSearch(places);
+            setAdapter(helper.getSearch());
 
         }
     }
